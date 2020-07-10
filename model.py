@@ -189,26 +189,33 @@ class VanillaRNN:
         """
         s = ""
         
-       # x = np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,0,0,0,0,0,0,0,0,0,0,0]]) #np.zeros((1, self.vocab_size))
-    
+        x = np.zeros((1, self.vocab_size))
+
 
         for i in range(25):
-            print(self.nexte)
-            index = self.char_to_idx[self.nexte] 
+            #print("importing ", self.nexte)
+          
             x = np.zeros((1, self.vocab_size))
-            self.nexte=x
+            #print(self.nexte)
+            index = self.char_to_idx[self.nexte] 
+            #x = np.zeros((1, self.vocab_size))
+            #elf.nexte=x
             x[0][index] = 1
+            #print(x)
            # print(self.char_to_idx[np.argmax(self.nexte)] )
             #exit()
            # print(self.h0)
-            h = np.tanh(np.dot(self.nexte, self.params["W_xh"]) + np.dot(self.h0, self.params["W_hh"]) + self.params["b_h"])
+           # h[t] = np.tanh(np.dot(X[t], self.params["W_xh"]) + np.dot(h[t - 1], self.params["W_hh"]) + self.params["b_h"])
+
+            h = np.tanh(np.dot(x, self.params["W_xh"]) + np.dot(self.h0, self.params["W_hh"]) + self.params["b_h"])
+            self.h0=h
             y_pred = self.softmax(np.dot(h, self.params["W_hy"]) + self.params["b_y"])
 
             for i in range(len(y_pred)):
-                #print(self.idx_to_char[np.argmax(y_pred[i])])
+                #print("lenpred",len(y_pred),self.idx_to_char[np.argmax(y_pred[i])])
                 s+=self.idx_to_char[np.argmax(y_pred[i])]
                 self.nexte=self.idx_to_char[np.argmax(y_pred[i])]
-
+        #exit()
         print(s)
         return s
 
