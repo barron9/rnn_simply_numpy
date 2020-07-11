@@ -39,7 +39,7 @@ class VanillaRNN:
         self.params["b_y"] = np.zeros((1, self.vocab_size))
 
         self.h0 = np.zeros((1, self.n_h))  # value of hidden state at time step t = -1. This is updated over time
-        self.nexte="t"
+        self.nexte=" "
         # initialize gradients and memory parameters for Adagrad
         self.grads = {}
         self.m_params = {}
@@ -199,7 +199,7 @@ class VanillaRNN:
         #exit()
         
 
-        for i in range(25):
+        for i in range(0,20,1):
             #print("importing ", self.nexte)
           
             x = np.zeros((1, self.vocab_size))
@@ -215,13 +215,14 @@ class VanillaRNN:
  
             y_pred = self.softmax(np.dot(hs, self.params["W_hy"]) + self.params["b_y"])
 
-            for i in range(len(y_pred)):
+            for m in range(len(y_pred)):
                 #print("lenpred",len(y_pred),self.idx_to_char[np.argmax(y_pred[i])])
-                s+=self.idx_to_char[np.argmax(y_pred[i])]
-                self.nexte=self.idx_to_char[np.argmax(y_pred[i])]
+                s+=self.idx_to_char[np.argmax(y_pred[m])]
+                self.nexte=self.idx_to_char[np.argmax(y_pred[m])]
         #exit()
-            if i == 25:
-                self.nexte="t"
+            ##print(i)
+            if i == 19:
+                self.nexte=" "
         print(s)
         return s
 
