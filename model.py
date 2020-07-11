@@ -112,13 +112,16 @@ class VanillaRNN:
         """
         h = {}  # stores hidden states
         h[-1] = self.h0  # set initial hidden state at t=-1
-
+        
         y_pred = {}  # stores softmax output probabilities
         #print("X "+str(X))
         # iterate over each character in the input sequence
         for t in range(self.seq_len):
-           #print(h[t - 1])
+            #print(h[t - 1])
+  
             h[t] = np.tanh(np.dot(X[t], self.params["W_xh"]) + np.dot(h[t - 1], self.params["W_hh"]) + self.params["b_h"])
+            #print(h[t])
+            #exit()
             y_pred[t] = self.softmax(np.dot(h[t], self.params["W_hy"]) + self.params["b_y"])
             #exit()
         # with open("data.wei", "r+") as f:
@@ -131,6 +134,7 @@ class VanillaRNN:
         #print(" W_xh ",self.params["W_xh"]," W_hh ",self.params["W_hh"]," b_h ",self.params["b_h"]," W_hy ",self.params["W_hy"]," b_y ",self.params["b_y"])
         #print("y_pred "+str(y_pred))
         self.ho = h[t]
+        #print(h)
         #exit()
         return y_pred, h
 
@@ -188,34 +192,36 @@ class VanillaRNN:
             s - string made of sampled characters, of size sample_size
         """
         s = ""
-        
+        hs = {}  # stores hidden states
+        hs = self.h0  # set initial hidden state at t=-1
         x = np.zeros((1, self.vocab_size))
-
+        #print(x.shape,x)
+        #exit()
+        
 
         for i in range(25):
             #print("importing ", self.nexte)
           
             x = np.zeros((1, self.vocab_size))
             #print(self.nexte)
-            index = self.char_to_idx[self.nexte] 
+            index = self.char_to_idx[self.nexte]
+            #print(self.nexte,index)
+            #exit() 
             #x = np.zeros((1, self.vocab_size))
             #elf.nexte=x
             x[0][index] = 1
-            #print(x)
-           # print(self.char_to_idx[np.argmax(self.nexte)] )
-            #exit()
-           # print(self.h0)
-           # h[t] = np.tanh(np.dot(X[t], self.params["W_xh"]) + np.dot(h[t - 1], self.params["W_hh"]) + self.params["b_h"])
 
-            h = np.tanh(np.dot(x, self.params["W_xh"]) + np.dot(self.h0, self.params["W_hh"]) + self.params["b_h"])
-            self.h0=h
-            y_pred = self.softmax(np.dot(h, self.params["W_hy"]) + self.params["b_y"])
+            hs = np.tanh(np.dot(x, self.params["W_xh"]) + np.dot(hs, self.params["W_hh"]) + self.params["b_h"])
+ 
+            y_pred = self.softmax(np.dot(hs, self.params["W_hy"]) + self.params["b_y"])
 
             for i in range(len(y_pred)):
                 #print("lenpred",len(y_pred),self.idx_to_char[np.argmax(y_pred[i])])
                 s+=self.idx_to_char[np.argmax(y_pred[i])]
                 self.nexte=self.idx_to_char[np.argmax(y_pred[i])]
         #exit()
+            if i == 25:
+                self.nexte="t"
         print(s)
         return s
 
@@ -265,10 +271,12 @@ class VanillaRNN:
                 self.backward_pass(X_batch, y_batch, y_pred, h)
                 self.update_params()
 
+            
                 #print(s,"|",r)
-            self.sample(25,0)
+            if  i+1 > 299:
+               self.sample(25,0)
                 #exit()
-            #print(self.sample(10,0))
+            (self.sample(10,0))
             if verbose:
                 print('Epoch:', i + 1, "\tLoss:", loss, "")
            
